@@ -5001,25 +5001,20 @@ void ItemUseCB_CapCandy(u8 taskId, TaskFunc task)
     u16 *itemPtr = &gSpecialVar_ItemId;
     u8 cap = GetCurrentLevelCap();
     bool8 cannotUseEffect = TRUE;
-    u8 level = GetMonData(mon, MON_DATA_LEVEL, NULL);
+    u8 level = GetMonData(mon, MON_DATA_LEVEL);
 
     if (level < cap)
     {
+        u32 exp;
         BufferMonStatsToTaskData(mon, arrayPtr);
-        while (GetMonData(mon, MON_DATA_LEVEL, NULL) < cap)
-        {
-            if (!TryIncrementMonLevel(mon))
-                break;
-            cannotUseEffect = FALSE;
-        }
 
-        if (!cannotUseEffect)
-        {
-            u32 exp = gExperienceTables[gSpeciesInfo[GetMonData(mon, MON_DATA_SPECIES, NULL)].growthRate][GetMonData(mon, MON_DATA_LEVEL, NULL)];
-            SetMonData(mon, MON_DATA_EXP, &exp);
-            CalculateMonStats(mon);
-            BufferMonStatsToTaskData(mon, &ptr->data[NUM_STATS]);
-        }
+        exp = gExperienceTables[gSpeciesInfo[GetMonData(mon, MON_DATA_SPECIES)].growthRate][cap];
+        SetMonData(mon, MON_DATA_EXP, &exp);
+        SetMonData(mon, MON_DATA_LEVEL, &cap);
+        CalculateMonStats(mon);
+
+        cannotUseEffect = FALSE;
+        BufferMonStatsToTaskData(mon, &ptr->data[NUM_STATS]);
     }
 
     PlaySE(SE_SELECT);
