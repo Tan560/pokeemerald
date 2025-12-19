@@ -105,10 +105,11 @@ static void HandlePartySwap(void)
             ZeroMonData(&gPlayerParty[i]);
 
         memcpy(gPlayerParty, gEnemyParty, sizeof(gPlayerParty));
+
         CalculatePlayerPartyCount();
+        HealPlayerParty();
     }
 }
-
 EWRAM_DATA static u16 sTrainerBattleMode = 0;
 EWRAM_DATA u16 gTrainerBattleOpponent_A = 0;
 EWRAM_DATA u16 gTrainerBattleOpponent_B = 0;
