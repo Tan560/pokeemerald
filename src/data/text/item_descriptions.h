@@ -1554,3 +1554,8 @@ static const u8 sCapCandyDesc[] = _(
     "Raises the level\n"
     "of a POKéMON to\n"
     "the level cap.");
+
+static const u8 sPermRepelDesc[] = _(
+    "A reusable item\n"
+    "that repels wild\n"
+    "POKéMON.");

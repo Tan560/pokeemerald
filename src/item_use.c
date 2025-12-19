@@ -75,23 +75,23 @@ static void CB2_OpenPokeblockFromBag(void);
 EWRAM_DATA static TaskFunc sItemUseOnFieldCB = NULL;
 
 // Below is set TRUE by UseRegisteredKeyItemOnField
-#define tUsingRegisteredKeyItem  data[3]
+#define tUsingRegisteredKeyItem data[3]
 
 // UB here if an item with type ITEM_USE_MAIL or ITEM_USE_BAG_MENU uses SetUpItemUseCallback
 // Never occurs in vanilla, but can occur with improperly created items
 static const MainCallback sItemUseCallbacks[] =
-{
-    [ITEM_USE_PARTY_MENU - 1]  = CB2_ShowPartyMenuForItemUse,
-    [ITEM_USE_FIELD - 1]       = CB2_ReturnToField,
-    [ITEM_USE_PBLOCK_CASE - 1] = NULL,
+    {
+        [ITEM_USE_PARTY_MENU - 1] = CB2_ShowPartyMenuForItemUse,
+        [ITEM_USE_FIELD - 1] = CB2_ReturnToField,
+        [ITEM_USE_PBLOCK_CASE - 1] = NULL,
 };
 
 static const u8 sClockwiseDirections[] = {DIR_NORTH, DIR_EAST, DIR_SOUTH, DIR_WEST};
 
 static const struct YesNoFuncTable sUseTMHMYesNoFuncTable =
-{
-    .yesFunc = UseTMHM,
-    .noFunc = CloseItemMessage,
+    {
+        .yesFunc = UseTMHM,
+        .noFunc = CloseItemMessage,
 };
 
 #define tEnigmaBerryType data[4]
@@ -299,12 +299,12 @@ static void ItemUseOnFieldCB_Itemfinder(u8 taskId)
 }
 
 // Define itemfinder task data
-#define tItemDistanceX    data[0]
-#define tItemDistanceY    data[1]
-#define tItemFound        data[2]
-#define tCounter          data[3] // Used to count delay between beeps and rotations during player spin
-#define tItemfinderBeeps  data[4]
-#define tFacingDir        data[5]
+#define tItemDistanceX data[0]
+#define tItemDistanceY data[1]
+#define tItemFound data[2]
+#define tCounter data[3] // Used to count delay between beeps and rotations during player spin
+#define tItemfinderBeeps data[4]
+#define tFacingDir data[5]
 
 static void Task_UseItemfinder(u8 taskId)
 {
@@ -458,10 +458,7 @@ static void CheckForHiddenItemsInMapConnection(u8 taskId)
     {
         for (y = playerY - 5; y <= playerY + 5; y++)
         {
-            if (var1 > x
-             || x >= width
-             || var2 > y
-             || y >= height)
+            if (var1 > x || x >= width || var2 > y || y >= height)
             {
                 const struct MapConnection *conn = GetMapConnectionAtPos(x, y);
                 if (conn && IsHiddenItemPresentInConnection(conn, x, y) == TRUE)
@@ -491,13 +488,13 @@ static void SetDistanceOfClosestHiddenItem(u8 taskId, s16 itemDistanceX, s16 ite
         if (tItemDistanceX < 0)
             oldItemAbsX = tItemDistanceX * -1; // WEST
         else
-            oldItemAbsX = tItemDistanceX;      // EAST
+            oldItemAbsX = tItemDistanceX; // EAST
 
         // Get absolute y distance of the already-found item
         if (tItemDistanceY < 0)
             oldItemAbsY = tItemDistanceY * -1; // NORTH
         else
-            oldItemAbsY = tItemDistanceY;      // SOUTH
+            oldItemAbsY = tItemDistanceY; // SOUTH
 
         // Get absolute x distance of the newly-found item
         if (itemDistanceX < 0)
@@ -511,7 +508,6 @@ static void SetDistanceOfClosestHiddenItem(u8 taskId, s16 itemDistanceX, s16 ite
         else
             newItemAbsY = itemDistanceY;
 
-
         if (oldItemAbsX + oldItemAbsY > newItemAbsX + newItemAbsY)
         {
             // New item is closer
@@ -520,8 +516,7 @@ static void SetDistanceOfClosestHiddenItem(u8 taskId, s16 itemDistanceX, s16 ite
         }
         else
         {
-            if (oldItemAbsX + oldItemAbsY == newItemAbsX + newItemAbsY
-            && (oldItemAbsY > newItemAbsY || (oldItemAbsY == newItemAbsY && tItemDistanceY < itemDistanceY)))
+            if (oldItemAbsX + oldItemAbsY == newItemAbsX + newItemAbsY && (oldItemAbsY > newItemAbsY || (oldItemAbsY == newItemAbsY && tItemDistanceY < itemDistanceY)))
             {
                 // If items are equal distance, use whichever is closer on the Y axis or further south
                 tItemDistanceX = itemDistanceX;
@@ -595,8 +590,7 @@ static void Task_StandingOnHiddenItem(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;
 
-    if (ObjectEventCheckHeldMovementStatus(&gObjectEvents[GetObjectEventIdByLocalIdAndMap(LOCALID_PLAYER, 0, 0)]) == TRUE
-    || tItemFound == FALSE)
+    if (ObjectEventCheckHeldMovementStatus(&gObjectEvents[GetObjectEventIdByLocalIdAndMap(LOCALID_PLAYER, 0, 0)]) == TRUE || tItemFound == FALSE)
     {
         // Spin player around on item
         PlayerFaceHiddenItem(sClockwiseDirections[tFacingDir]);
@@ -854,6 +848,20 @@ void ItemUseOutOfBattle_Repel(u8 taskId)
         DisplayItemMessageInBattlePyramid(taskId, gText_RepelEffectsLingered, Task_CloseBattlePyramidBagMessage);
 }
 
+void ItemUseOutOfBattle_PermRepel(u8 taskId)
+{
+    if (FlagGet(FLAG_PERM_REPEL_ACTIVE) == TRUE)
+    {
+        FlagClear(FLAG_PERM_REPEL_ACTIVE);
+        DisplayItemMessage(taskId, FONT_NORMAL, gText_PermRepelOff, CloseItemMessage);
+    }
+    else
+    {
+        FlagSet(FLAG_PERM_REPEL_ACTIVE);
+        DisplayItemMessage(taskId, FONT_NORMAL, gText_PermRepelOn, CloseItemMessage);
+    }
+}
+
 static void Task_StartUseRepel(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;
@@ -881,7 +889,7 @@ static void Task_UseRepel(u8 taskId)
 
 static void Task_UsedBlackWhiteFlute(u8 taskId)
 {
-    if(++gTasks[taskId].data[8] > 7)
+    if (++gTasks[taskId].data[8] > 7)
     {
         PlaySE(SE_GLASS_FLUTE);
         if (CurrentBattlePyramidLocation() == PYRAMID_LOCATION_NONE)
@@ -985,7 +993,7 @@ static void Task_CloseStatIncreaseMessage(u8 taskId)
 
 static void Task_UseStatIncreaseItem(u8 taskId)
 {
-    if(++gTasks[taskId].data[8] > 7)
+    if (++gTasks[taskId].data[8] > 7)
     {
         PlaySE(SE_USE_ITEM);
         RemoveBagItem(gSpecialVar_ItemId, 1);
@@ -1052,7 +1060,7 @@ void ItemUseInBattle_PPRecovery(u8 taskId)
 void ItemUseInBattle_Escape(u8 taskId)
 {
 
-    if((gBattleTypeFlags & BATTLE_TYPE_TRAINER) == FALSE)
+    if ((gBattleTypeFlags & BATTLE_TYPE_TRAINER) == FALSE)
     {
         RemoveUsedItem();
         if (CurrentBattlePyramidLocation() == PYRAMID_LOCATION_NONE)

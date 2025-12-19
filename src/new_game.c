@@ -56,10 +56,9 @@ EWRAM_DATA bool8 gDifferentSaveFile = FALSE;
 EWRAM_DATA bool8 gEnableContestDebugging = FALSE;
 
 static const struct ContestWinner sContestWinnerPicDummy =
-{
-    .monName = _(""),
-    .trainerName = _("")
-};
+    {
+        .monName = _(""),
+        .trainerName = _("")};
 
 void SetTrainerId(u32 trainerId, u8 *dst)
 {
@@ -185,6 +184,7 @@ void NewGameInitData(void)
     gSaveBlock1Ptr->registeredItem = ITEM_NONE;
     ClearBag();
     AddBagItem(ITEM_CAP_CANDY, 1);
+    AddBagItem(ITEM_PERM_REPEL, 1);
     NewGameInitPCItems();
     ClearPokeblocks();
     ClearDecorationInventories();
