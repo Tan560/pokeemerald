@@ -4988,12 +4988,19 @@ void DoSingleLevelUp(u8 taskId)
     if (!cannotUseEffect)
     {
         UpdateMonDisplayInfoAfterRareCandy(gPartyMenu.slotId, mon);
-        GetMonNickname(mon, gStringVar1);
-        ConvertIntToDecimalStringN(gStringVar2, GetMonData(mon, MON_DATA_LEVEL), STR_CONV_MODE_LEFT_ALIGN, 3);
-        StringExpandPlaceholders(gStringVar4, gText_PkmnElevatedToLvVar2);
-        DisplayPartyMenuMessage(gStringVar4, TRUE);
-        ScheduleBgCopyTilemapToVram(2);
-        gTasks[taskId].func = Task_DisplayLevelUpStatsPg1;
+        if (gPartyMenu.capCandyInProgress)
+        {
+            gTasks[taskId].func = Task_TryLearnNewMoves;
+        }
+        else
+        {
+            GetMonNickname(mon, gStringVar1);
+            ConvertIntToDecimalStringN(gStringVar2, GetMonData(mon, MON_DATA_LEVEL), STR_CONV_MODE_LEFT_ALIGN, 3);
+            StringExpandPlaceholders(gStringVar4, gText_PkmnElevatedToLvVar2);
+            DisplayPartyMenuMessage(gStringVar4, TRUE);
+            ScheduleBgCopyTilemapToVram(2);
+            gTasks[taskId].func = Task_DisplayLevelUpStatsPg1;
+        }
     }
 }
 
@@ -5051,7 +5058,6 @@ void ItemUseCB_CapCandy(u8 taskId, TaskFunc task)
     else
     {
         gPartyMenu.capCandyInProgress = TRUE;
-        PlayFanfareByFanfareNum(FANFARE_LEVEL_UP);
         DoSingleLevelUp(taskId);
         // if (GetMonData(mon, MON_DATA_LEVEL) >= GetCurrentLevelCap())
         // {
@@ -5123,9 +5129,11 @@ static void Task_TryLearnNewMoves(u8 taskId)
 {
     u16 learnMove;
 
-    if (WaitFanfare(FALSE) && ((JOY_NEW(A_BUTTON)) || (JOY_NEW(B_BUTTON))))
+    if (gPartyMenu.capCandyInProgress || (WaitFanfare(FALSE) && IsPartyMenuTextPrinterActive() != TRUE && ((JOY_NEW(A_BUTTON)) || (JOY_NEW(B_BUTTON)))))
     {
-        RemoveLevelUpStatsWindow();
+        if (!gPartyMenu.capCandyInProgress)
+            RemoveLevelUpStatsWindow();
+
         learnMove = MonTryLearningNewMove(&gPlayerParty[gPartyMenu.slotId], TRUE);
         gPartyMenu.learnMoveState = 1;
         switch (learnMove)
