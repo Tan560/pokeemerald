@@ -101,15 +101,78 @@ static void HandlePartySwap(void)
     if (FlagGet(FLAG_SWAP_TEAM_MODE) && gBattleOutcome == B_OUTCOME_WON)
     {
         s32 i;
+
+        struct Pokemon *enemyMon;
+        struct Pokemon *newMon;
+
+        u16 species;
+        u8 level;
+        u32 ivs;
+        u16 move;
+        u8 pp;
+
+        // Clear player party
         for (i = 0; i < PARTY_SIZE; i++)
             ZeroMonData(&gPlayerParty[i]);
 
-        memcpy(gPlayerParty, gEnemyParty, sizeof(gPlayerParty));
+        // Build new party from enemy party
+        for (i = 0; i < PARTY_SIZE; i++)
+        {
+            enemyMon = &gEnemyParty[i];
+
+            species = GetMonData(enemyMon, MON_DATA_SPECIES);
+            if (species == SPECIES_NONE)
+                continue;
+
+            level = GetMonData(enemyMon, MON_DATA_LEVEL);
+
+            newMon = &gPlayerParty[i];
+
+            CreateMon(newMon,
+                      species,
+                      level,
+                      0,
+                      FALSE,
+                      0,
+                      OT_ID_PLAYER_ID,
+                      0);
+
+            // Copy IVs
+            ivs = GetMonData(enemyMon, MON_DATA_IVS);
+            SetMonData(newMon, MON_DATA_IVS, &ivs);
+
+            // Copy moves + PP
+            move = GetMonData(enemyMon, MON_DATA_MOVE1);
+            SetMonData(newMon, MON_DATA_MOVE1, &move);
+            pp = GetMonData(enemyMon, MON_DATA_PP1);
+            SetMonData(newMon, MON_DATA_PP1, &pp);
+
+            move = GetMonData(enemyMon, MON_DATA_MOVE2);
+            SetMonData(newMon, MON_DATA_MOVE2, &move);
+            pp = GetMonData(enemyMon, MON_DATA_PP2);
+            SetMonData(newMon, MON_DATA_PP2, &pp);
+
+            move = GetMonData(enemyMon, MON_DATA_MOVE3);
+            SetMonData(newMon, MON_DATA_MOVE3, &move);
+            pp = GetMonData(enemyMon, MON_DATA_PP3);
+            SetMonData(newMon, MON_DATA_PP3, &pp);
+
+            move = GetMonData(enemyMon, MON_DATA_MOVE4);
+            SetMonData(newMon, MON_DATA_MOVE4, &move);
+            pp = GetMonData(enemyMon, MON_DATA_PP4);
+            SetMonData(newMon, MON_DATA_PP4, &pp);
+
+            // Fix OT (obedience)
+            SetMonData(newMon, MON_DATA_OT_NAME, gSaveBlock2Ptr->playerName);
+            SetMonData(newMon, MON_DATA_OT_GENDER, &gSaveBlock2Ptr->playerGender);
+            SetMonData(newMon, MON_DATA_OT_ID, &gSaveBlock2Ptr->playerTrainerId);
+        }
 
         CalculatePlayerPartyCount();
         HealPlayerParty();
     }
 }
+
 EWRAM_DATA static u16 sTrainerBattleMode = 0;
 EWRAM_DATA u16 gTrainerBattleOpponent_A = 0;
 EWRAM_DATA u16 gTrainerBattleOpponent_B = 0;
