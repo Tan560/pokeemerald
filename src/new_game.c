@@ -56,10 +56,9 @@ EWRAM_DATA bool8 gDifferentSaveFile = FALSE;
 EWRAM_DATA bool8 gEnableContestDebugging = FALSE;
 
 static const struct ContestWinner sContestWinnerPicDummy =
-{
-    .monName = _(""),
-    .trainerName = _("")
-};
+    {
+        .monName = _(""),
+        .trainerName = _("")};
 
 void SetTrainerId(u32 trainerId, u8 *dst)
 {
@@ -90,10 +89,10 @@ static void InitPlayerTrainerId(void)
 // L=A isnt set here for some reason.
 static void SetDefaultOptions(void)
 {
-    gSaveBlock2Ptr->optionsTextSpeed = OPTIONS_TEXT_SPEED_MID;
+    gSaveBlock2Ptr->optionsTextSpeed = OPTIONS_TEXT_SPEED_FAST;
     gSaveBlock2Ptr->optionsWindowFrameType = 0;
     gSaveBlock2Ptr->optionsSound = OPTIONS_SOUND_MONO;
-    gSaveBlock2Ptr->optionsBattleStyle = OPTIONS_BATTLE_STYLE_SHIFT;
+    gSaveBlock2Ptr->optionsBattleStyle = OPTIONS_BATTLE_STYLE_SET;
     gSaveBlock2Ptr->optionsBattleSceneOff = FALSE;
     gSaveBlock2Ptr->regionMapZoom = FALSE;
 }
@@ -185,6 +184,7 @@ void NewGameInitData(void)
     gSaveBlock1Ptr->registeredItem = ITEM_NONE;
     ClearBag();
     AddBagItem(ITEM_CAP_CANDY, 1);
+    AddBagItem(ITEM_PERM_REPEL, 1);
     NewGameInitPCItems();
     ClearPokeblocks();
     ClearDecorationInventories();
@@ -205,6 +205,8 @@ void NewGameInitData(void)
     WipeTrainerNameRecords();
     ResetTrainerHillResults();
     ResetContestLinkResults();
+    // Give Player pokemon for testing
+    // CreateMon(&gPlayerParty[0], SPECIES_TORCHIC, 5, USE_RANDOM_IVS, 1, 0, 0, 0);
 }
 
 static void ResetMiniGamesRecords(void)

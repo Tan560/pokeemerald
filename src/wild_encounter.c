@@ -851,6 +851,8 @@ bool8 UpdateRepelCounter(void)
 {
     u16 steps;
 
+    if (FlagGet(FLAG_PERM_REPEL_ACTIVE))
+        return FALSE;
     if (InBattlePike() || CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
         return FALSE;
     if (InUnionRoom() == TRUE)
@@ -875,7 +877,7 @@ static bool8 IsWildLevelAllowedByRepel(u8 wildLevel)
 {
     u8 i;
 
-    if (!VarGet(VAR_REPEL_STEP_COUNT))
+    if (!VarGet(VAR_REPEL_STEP_COUNT) && !FlagGet(FLAG_PERM_REPEL_ACTIVE))
         return TRUE;
 
     for (i = 0; i < PARTY_SIZE; i++)

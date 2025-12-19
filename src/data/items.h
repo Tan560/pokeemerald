@@ -4550,4 +4550,17 @@ const struct Item gItems[] =
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_CapCandy,
     },
+
+    [ITEM_PERM_REPEL] =
+    {
+        .name = _("PERM REPEL"),
+        .itemId = ITEM_PERM_REPEL,
+        .price = 0,
+        .description = sPermRepelDesc,
+        .importance = 1,
+        .registrability = TRUE,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_PermRepel,
+    },
 };
