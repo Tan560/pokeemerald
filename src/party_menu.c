@@ -4987,7 +4987,6 @@ void DoSingleLevelUp(u8 taskId)
 
     if (!cannotUseEffect)
     {
-        PlayFanfareByFanfareNum(FANFARE_LEVEL_UP);
         UpdateMonDisplayInfoAfterRareCandy(gPartyMenu.slotId, mon);
         GetMonNickname(mon, gStringVar1);
         ConvertIntToDecimalStringN(gStringVar2, GetMonData(mon, MON_DATA_LEVEL), STR_CONV_MODE_LEFT_ALIGN, 3);
@@ -5052,18 +5051,19 @@ void ItemUseCB_CapCandy(u8 taskId, TaskFunc task)
     else
     {
         gPartyMenu.capCandyInProgress = TRUE;
+        PlayFanfareByFanfareNum(FANFARE_LEVEL_UP);
         DoSingleLevelUp(taskId);
-        if (GetMonData(mon, MON_DATA_LEVEL) >= GetCurrentLevelCap())
-        {
-            gPartyMenu.capCandyInProgress = FALSE;
-            if (gPartyMenuUseExitCallback == FALSE)
-                sPartyMenuInternal->exitCallback = NULL;
-            Task_ClosePartyMenu(taskId);
-        }
-        else
-        {
-            ItemUseCB_CapCandy(taskId, task);
-        }
+        // if (GetMonData(mon, MON_DATA_LEVEL) >= GetCurrentLevelCap())
+        // {
+        //     gPartyMenu.capCandyInProgress = FALSE;
+        //     if (gPartyMenuUseExitCallback == FALSE)
+        //         sPartyMenuInternal->exitCallback = NULL;
+        //     Task_ClosePartyMenu(taskId);
+        // }
+        // else
+        // {
+        //     ItemUseCB_CapCandy(taskId, task);
+        // }
     }
 }
 
