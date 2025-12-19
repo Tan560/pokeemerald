@@ -4993,6 +4993,53 @@ void ItemUseCB_RareCandy(u8 taskId, TaskFunc task)
     }
 }
 
+void ItemUseCB_CapCandy(u8 taskId, TaskFunc task)
+{
+    struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
+    struct PartyMenuInternal *ptr = sPartyMenuInternal;
+    s16 *arrayPtr = ptr->data;
+    u16 *itemPtr = &gSpecialVar_ItemId;
+    u8 cap = GetCurrentLevelCap();
+    bool8 cannotUseEffect = TRUE;
+    u8 level = GetMonData(mon, MON_DATA_LEVEL);
+
+    if (level < cap)
+    {
+        u32 exp;
+        BufferMonStatsToTaskData(mon, arrayPtr);
+
+        exp = gExperienceTables[gSpeciesInfo[GetMonData(mon, MON_DATA_SPECIES)].growthRate][cap];
+        SetMonData(mon, MON_DATA_EXP, &exp);
+        SetMonData(mon, MON_DATA_LEVEL, &cap);
+        CalculateMonStats(mon);
+
+        cannotUseEffect = FALSE;
+        BufferMonStatsToTaskData(mon, &ptr->data[NUM_STATS]);
+    }
+
+    PlaySE(SE_SELECT);
+    if (cannotUseEffect)
+    {
+        gPartyMenuUseExitCallback = FALSE;
+        DisplayPartyMenuMessage(gText_WontHaveEffect, TRUE);
+        ScheduleBgCopyTilemapToVram(2);
+        gTasks[taskId].func = task;
+    }
+    else
+    {
+        gPartyMenuUseExitCallback = TRUE;
+        PlayFanfareByFanfareNum(FANFARE_LEVEL_UP);
+        UpdateMonDisplayInfoAfterRareCandy(gPartyMenu.slotId, mon);
+        // Cap Candy is reusable, so we don't remove it.
+        GetMonNickname(mon, gStringVar1);
+        ConvertIntToDecimalStringN(gStringVar2, GetMonData(mon, MON_DATA_LEVEL, NULL), STR_CONV_MODE_LEFT_ALIGN, 3);
+        StringExpandPlaceholders(gStringVar4, gText_PkmnElevatedToLvVar2);
+        DisplayPartyMenuMessage(gStringVar4, TRUE);
+        ScheduleBgCopyTilemapToVram(2);
+        gTasks[taskId].func = Task_DisplayLevelUpStatsPg1;
+    }
+}
+
 static void UpdateMonDisplayInfoAfterRareCandy(u8 slot, struct Pokemon *mon)
 {
     SetPartyMonAilmentGfx(mon, &sPartyMenuBoxes[slot]);
