@@ -205,6 +205,8 @@ void NewGameInitData(void)
     WipeTrainerNameRecords();
     ResetTrainerHillResults();
     ResetContestLinkResults();
+    // Give Player pokemon for testing
+    // CreateMon(&gPlayerParty[0], SPECIES_TORCHIC, 5, USE_RANDOM_IVS, 1, 0, 0, 0);
 }
 
 static void ResetMiniGamesRecords(void)
