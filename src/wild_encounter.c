@@ -386,7 +386,7 @@ static void CreateWildMon(u16 species, u8 level)
 
     ZeroEnemyPartyMons();
     checkCuteCharm = TRUE;
-
+    species = GetRandomizedSpecies(species);
     switch (gSpeciesInfo[species].genderRatio)
     {
     case MON_MALE:
