@@ -15,6 +15,7 @@
 #include "field_player_avatar.h"
 #include "field_screen_effect.h"
 #include "field_specials.h"
+#include "field_special_scene.h"
 #include "field_weather.h"
 #include "graphics.h"
 #include "international_string_util.h"
@@ -1323,6 +1324,12 @@ u16 GetSlotMachineId(void)
         return sSlotMachineServiceDayIds[rnd % SLOT_MACHINE_COUNT];
 
     return sSlotMachineIds[rnd % SLOT_MACHINE_COUNT];
+}
+
+void SetUpTruckScene(void)
+{
+    gFieldCallback = ExecuteTruckSequence;
+    ScriptContext_Stop();
 }
 
 bool8 FoundAbandonedShipRoom1Key(void)
