@@ -17,12 +17,18 @@ EventScript_ModeSelection::
 EventScript_EnableRandomizer::
 	setflag FLAG_RANDOMIZE_MODE
 	clearflag FLAG_SWAP_TEAM_MODE
-	goto EventScript_EnableAutoHeal
+	msgbox Text_AutoHeal, MSGBOX_YESNO
+	compare VAR_RESULT, YES
+	goto_if_eq EventScript_EnableAutoHeal
+	goto EventScript_ContinueNewGame
 
 EventScript_EnableSwapTeam::
 	clearflag FLAG_RANDOMIZE_MODE
 	setflag FLAG_SWAP_TEAM_MODE
-	goto EventScript_EnableAutoHeal
+	msgbox Text_AutoHeal, MSGBOX_YESNO
+	compare VAR_RESULT, YES
+	goto_if_eq EventScript_EnableAutoHeal
+	goto EventScript_ContinueNewGame
 
 EventScript_EnableAutoHeal::
 	setflag FLAG_AUTO_HEAL

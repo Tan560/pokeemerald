@@ -11,25 +11,30 @@ EventScript_ModeSelection::
 	clearflag FLAG_SWAP_TEAM_MODE
 	msgbox Text_AutoHeal, MSGBOX_YESNO
 	compare VAR_RESULT, YES
-	goto_if_eq EventScript_AutoHeal
+	goto_if_eq EventScript_EnableAutoHeal
 	goto EventScript_ContinueNewGame
 
 EventScript_EnableRandomizer::
 	setflag FLAG_RANDOMIZE_MODE
 	clearflag FLAG_SWAP_TEAM_MODE
-	goto EventScript_AutoHeal
+	msgbox Text_AutoHeal, MSGBOX_YESNO
+	compare VAR_RESULT, YES
+	goto_if_eq EventScript_EnableAutoHeal
+	goto EventScript_ContinueNewGame
 
 EventScript_EnableSwapTeam::
 	clearflag FLAG_RANDOMIZE_MODE
 	setflag FLAG_SWAP_TEAM_MODE
-	goto EventScript_AutoHeal
+	msgbox Text_AutoHeal, MSGBOX_YESNO
+	compare VAR_RESULT, YES
+	goto_if_eq EventScript_EnableAutoHeal
+	goto EventScript_ContinueNewGame
 
-EventScript_AutoHeal::
+EventScript_EnableAutoHeal::
 	setflag FLAG_AUTO_HEAL
 	goto EventScript_ContinueNewGame
 
 EventScript_ContinueNewGame::
-    special SetUpTruckScene
 	release
 	end
 
@@ -40,4 +45,4 @@ Text_SwapMode:
 	.string "Swap team mode?$"
 
 Text_AutoHeal:
-	.string "Auto heal?$"
+	.string "Auto heal mode?$"
