@@ -9681,7 +9681,7 @@ static void Cmd_handleballthrow(void)
             }
         }
 
-        if (!gSpeciesInfo[gBattleMons[gBattlerTarget].species].catchRate > 10)
+        if (gSpeciesInfo[gBattleMons[gBattlerTarget].species].catchRate > 10)
         {
             odds = 65535; // A value significantly higher than 254
         }

@@ -1426,6 +1426,9 @@ static void CB2_EndTrainerBattle(void)
             SetBattledTrainersFlags();
         }
     }
+    // check if auto heal flag is set
+    if (FlagGet(FLAG_AUTO_HEAL))
+        HealPlayerParty();
 }
 
 static void CB2_EndRematchBattle(void)
