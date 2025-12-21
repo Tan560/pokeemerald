@@ -391,7 +391,7 @@ extern const u16 gUnionRoomFacilityClasses[];
 extern const struct SpriteTemplate gBattlerSpriteTemplates[];
 extern const s8 gNatureStatTable[][5];
 
-u16 GetRandomizedSpecies(u16 species);
+u16 GetRandomizedSpecies(u16 species, u8 mapGroup, u8 mapNum);
 void ZeroBoxMonData(struct BoxPokemon *boxMon);
 void ZeroMonData(struct Pokemon *mon);
 void ZeroPlayerPartyMons(void);

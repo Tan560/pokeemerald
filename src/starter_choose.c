@@ -329,7 +329,7 @@ u16 GetStarterPokemon(u16 chosenStarterId)
 {
     if (chosenStarterId > STARTER_MON_COUNT)
         chosenStarterId = 0;
-    return GetRandomizedSpecies(sStarterMon[chosenStarterId]);
+    return sStarterMon[chosenStarterId];
 }
 
 static void VblankCB_StarterChoose(void)

@@ -2174,6 +2174,7 @@ void ZeroEnemyPartyMons(void)
 void CreateMon(struct Pokemon *mon, u16 species, u8 level, u8 fixedIV, u8 hasFixedPersonality, u32 fixedPersonality, u8 otIdType, u32 fixedOtId)
 {
     u32 mail;
+    species = GetRandomizedSpecies(species, gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum);
     ZeroMonData(mon);
     CreateBoxMon(&mon->box, species, level, fixedIV, hasFixedPersonality, fixedPersonality, otIdType, fixedOtId);
     SetMonData(mon, MON_DATA_LEVEL, &level);
@@ -7093,7 +7094,7 @@ u8 *MonSpritesGfxManager_GetSpritePtr(u8 managerId, u8 spriteNum)
     }
 }
 
-u16 GetRandomizedSpecies(u16 originalSpecies)
+u16 GetRandomizedSpecies(u16 originalSpecies, u8 mapGroup, u8 mapNum)
 {
     u32 seed;
     u16 newSpecies;
@@ -7110,9 +7111,7 @@ u16 GetRandomizedSpecies(u16 originalSpecies)
         return originalSpecies;
 
     // 3. Create a deterministic seed based on Trainer ID and Original Species.
-    // This ensures that Species X always becomes Species Y for this save file.
-    // We use the Low 16 bits of the Trainer ID.
-    seed = gSaveBlock2Ptr->playerTrainerId[0] + originalSpecies;
+    seed = gSaveBlock2Ptr->playerTrainerId[0] + originalSpecies + (mapGroup << 8) + mapNum;
 
     // 4. Run a simple pseudo-random algorithm (Linear Congruential Generator)
     // This scrambles the number so it doesn't look like a simple pattern.
@@ -7122,9 +7121,7 @@ u16 GetRandomizedSpecies(u16 originalSpecies)
     // SPECIES_CELEBI (or SPECIES_CHIMECHO in vanilla) is usually the last valid index
     // before the empty spaces/Unowns. Adjust NUM_SPECIES or the limit based on your dex.
     newSpecies = (seed % (SPECIES_CELEBI - 1)) + 1;
-
-    // Optional: Recurse if we hit a banned species (like Castform forms or Unown forms)
-    // if (newSpecies > SPECIES_CELEBI) return GetRandomizedSpecies(newSpecies);
+    // if (newSpecies > SPECIES_CELEBI) return GetRandomizedSpecies(newSpecies, mapGroup, mapNum);
 
     return newSpecies;
 }
