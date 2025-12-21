@@ -9,16 +9,29 @@ EventScript_ModeSelection::
 	goto_if_eq EventScript_EnableSwapTeam
 	clearflag FLAG_RANDOMIZE_MODE
 	clearflag FLAG_SWAP_TEAM_MODE
+	msgbox Text_AutoHeal, MSGBOX_YESNO
+	compare VAR_RESULT, YES
+	goto_if_eq EventScript_EnableAutoHeal
 	goto EventScript_ContinueNewGame
 
 EventScript_EnableRandomizer::
 	setflag FLAG_RANDOMIZE_MODE
 	clearflag FLAG_SWAP_TEAM_MODE
+	msgbox Text_AutoHeal, MSGBOX_YESNO
+	compare VAR_RESULT, YES
+	goto_if_eq EventScript_EnableAutoHeal
 	goto EventScript_ContinueNewGame
 
 EventScript_EnableSwapTeam::
 	clearflag FLAG_RANDOMIZE_MODE
 	setflag FLAG_SWAP_TEAM_MODE
+	msgbox Text_AutoHeal, MSGBOX_YESNO
+	compare VAR_RESULT, YES
+	goto_if_eq EventScript_EnableAutoHeal
+	goto EventScript_ContinueNewGame
+
+EventScript_EnableAutoHeal::
+	setflag FLAG_AUTO_HEAL
 	goto EventScript_ContinueNewGame
 
 EventScript_ContinueNewGame::
@@ -30,3 +43,6 @@ Text_RandomizeMode:
 
 Text_SwapMode:
 	.string "Swap team mode?$"
+
+Text_AutoHeal:
+	.string "Auto heal mode?$"

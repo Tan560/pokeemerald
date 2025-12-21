@@ -994,6 +994,18 @@ Common_EventScript_RemoveStaticPokemon::
 	release
 	end
 
+EventScript_PermRepelOn::
+    lockall
+    msgbox gText_PermRepelOn, MSGBOX_DEFAULT
+    releaseall
+    end
+
+EventScript_PermRepelOff::
+    lockall
+    msgbox gText_PermRepelOff, MSGBOX_DEFAULT
+    releaseall
+    end	
+
 Common_EventScript_LegendaryFlewAway::
 	fadescreenswapbuffers FADE_TO_BLACK
 	removeobject VAR_LAST_TALKED
