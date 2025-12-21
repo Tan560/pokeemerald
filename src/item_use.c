@@ -70,6 +70,8 @@ static void Task_UseRepel(u8);
 static void Task_CloseCantUseKeyItemMessage(u8);
 static void SetDistanceOfClosestHiddenItem(u8, s16, s16);
 static void CB2_OpenPokeblockFromBag(void);
+extern const u8 EventScript_PermRepelOn[];
+extern const u8 EventScript_PermRepelOff[];
 
 // EWRAM variables
 EWRAM_DATA static TaskFunc sItemUseOnFieldCB = NULL;
@@ -850,15 +852,38 @@ void ItemUseOutOfBattle_Repel(u8 taskId)
 
 void ItemUseOutOfBattle_PermRepel(u8 taskId)
 {
-    if (FlagGet(FLAG_PERM_REPEL_ACTIVE) == TRUE)
+    // Check if the current callback is the Bag Menu
+    if (gMain.callback2 == CB2_BagMenuFromStartMenu)
     {
-        FlagClear(FLAG_PERM_REPEL_ACTIVE);
-        DisplayItemMessage(taskId, FONT_NORMAL, gText_PermRepelOff, CloseItemMessage);
+        // --- INSIDE BAG MENU ---
+        if (FlagGet(FLAG_PERM_REPEL_ACTIVE) == TRUE)
+        {
+            FlagClear(FLAG_PERM_REPEL_ACTIVE);
+            DisplayItemMessage(taskId, FONT_NORMAL, gText_PermRepelOff, CloseItemMessage);
+        }
+        else
+        {
+            FlagSet(FLAG_PERM_REPEL_ACTIVE);
+            DisplayItemMessage(taskId, FONT_NORMAL, gText_PermRepelOn, CloseItemMessage);
+        }
     }
     else
     {
-        FlagSet(FLAG_PERM_REPEL_ACTIVE);
-        DisplayItemMessage(taskId, FONT_NORMAL, gText_PermRepelOn, CloseItemMessage);
+        // --- ON FIELD (REGISTERED) ---
+        // 1. Clean up the task that triggered the item use
+        DestroyTask(taskId);
+
+        // 2. Set/Clear flag and run the corresponding script
+        if (FlagGet(FLAG_PERM_REPEL_ACTIVE) == TRUE)
+        {
+            FlagClear(FLAG_PERM_REPEL_ACTIVE);
+            ScriptContext_SetupScript(EventScript_PermRepelOff);
+        }
+        else
+        {
+            FlagSet(FLAG_PERM_REPEL_ACTIVE);
+            ScriptContext_SetupScript(EventScript_PermRepelOn);
+        }
     }
 }
 
